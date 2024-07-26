@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator } fro
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../services/api';
 import ProductListElement from '../components/ProductListElement';
-
+import SearchBox from '../components/SearchBox';
 const ProductListScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,6 +10,8 @@ const ProductListScreen = () => {
   const [page, setPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoadMore, setIsLoadMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
 
   const loadData = async (page, pageSize) => {
     try {
@@ -27,8 +29,25 @@ const ProductListScreen = () => {
   };
 
   useEffect(() => {
-    loadData(page, 12);
+    const timer = setTimeout(() => {
+      loadData(page, 12);
+    }, 500); // 500ms timeout
+
+    // Cleanup timeout on component unmount or when `page` changes
+    return () => clearTimeout(timer);
   }, [page]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = data.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [searchQuery, data]);
+
 
   const handleLoadMore = () => {
     setIsLoadMore(true);
@@ -45,14 +64,16 @@ const ProductListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+        <SearchBox searchQuery={searchQuery} onSearch={setSearchQuery} />
       <FlatList
-        data={data}
+        data={filteredData}
         renderItem={({ item }) => (
           <ProductListElement 
             name={item.name} 
             image_url={item.image} 
             price={item.price} 
-            description={item.description}
+            model={item.model}
+            brand={item.brand}
           />
         )}
         keyExtractor={item => item.id}
@@ -71,6 +92,7 @@ export default ProductListScreen;
 
 const styles = StyleSheet.create({
     container:{
-        alignItems:"center"
+        alignItems:"center",
+        backgroundColor:"#EEEEEE"
     }
 });

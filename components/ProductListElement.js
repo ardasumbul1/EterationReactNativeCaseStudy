@@ -5,13 +5,14 @@ import { scaleFont } from '../utils/scaling';
 const { width } = Dimensions.get('window');
 const itemWidth = (width - 50) / 2; // Subtracting margins and spacing for two columns
 
-const ProductListElement = ({ name, image_url, price, description }) => {
+const ProductListElement = ({ name, image_url, price, model, brand }) => {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={{ uri: image_url }} />
       <Text style={styles.name} numberOfLines={1} ellipsizeMode='tail'>
         {name}
       </Text>
+      <Text style={styles.details}>{model} - {brand}</Text>
       <Text style={styles.price}>${price}</Text>
       <TouchableOpacity style={styles.button} onPress={() => {}}>
         <Text style={styles.buttonText}>Add to Cart</Text>
@@ -47,14 +48,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   price: {
-    fontSize: scaleFont(14),
-    color: '#888',
+    fontSize: scaleFont(12),
+    color: '#393E46',
     marginBottom: 10,
+  },
+  details: {
+    fontSize: scaleFont(11),
+    color: '#888',
+    marginBottom: 5,
   },
   button: {
     backgroundColor: '#929AAB',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center',
   },

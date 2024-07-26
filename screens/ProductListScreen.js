@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchData } from '../services/api';
 import ProductListElement from '../components/ProductListElement';
 import SearchBox from '../components/SearchBox';
+
 const ProductListScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +75,7 @@ const ProductListScreen = () => {
             price={item.price} 
             model={item.model}
             brand={item.brand}
+            description={item.description}
           />
         )}
         keyExtractor={item => item.id}

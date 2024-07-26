@@ -1,23 +1,36 @@
 import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { scaleFont } from '../utils/scaling';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
-const itemWidth = (width - 50) / 2; // Subtracting margins and spacing for two columns
+const itemWidth = (width - 50) / 2; 
 
-const ProductListElement = ({ name, image_url, price, model, brand }) => {
+const ProductListElement = ({ name, image_url, price, model, brand, description }) => {
+
+    const navigation = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: image_url }} />
-      <Text style={styles.name} numberOfLines={1} ellipsizeMode='tail'>
-        {name}
-      </Text>
-      <Text style={styles.details}>{model} - {brand}</Text>
-      <Text style={styles.price}>${price}</Text>
-      <TouchableOpacity style={styles.button} onPress={() => {}}>
-        <Text style={styles.buttonText}>Add to Cart</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate('Product Details', {
+        name,
+        image_url,
+        model,
+        brand,
+        price,
+        description
+      })}>
+        <View style={styles.container}>
+        <Image style={styles.image} source={{ uri: image_url }} />
+        <Text style={styles.name} numberOfLines={1} ellipsizeMode='tail'>
+            {name}
+        </Text>
+        <Text style={styles.details}>{model} - {brand}</Text>
+        <Text style={styles.price}>${price}</Text>
+        <TouchableOpacity style={styles.button} onPress={() => {}}>
+            <Text style={styles.buttonText}>Add to Cart</Text>
+        </TouchableOpacity>
+        </View>
+    </TouchableOpacity>
   );
 };
 

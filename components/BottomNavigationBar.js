@@ -13,6 +13,9 @@ const BottomNavigationBar = () => {
             <TouchableOpacity onPress={() => navigation.navigate('Shopping Cart')} style={styles.button}>
                 <Text style={styles.buttonText}>CART</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={styles.button}>
+                <Text style={styles.buttonText}>Favorites</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -23,7 +26,9 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: height * 0.09,
-        justifyContent: 'center',
+        flexDirection:"row",
+        justifyContent: 'space-evenly',
+        display:"space-between",
         alignItems: 'center',
         backgroundColor: '#f8f8f8',
         borderTopWidth: 1,
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#007bff',
         paddingVertical: height * 0.02,
-        paddingHorizontal: width * 0.3,
+        paddingHorizontal: width * 0.1,
         borderRadius: 25,
     },
     buttonText: {

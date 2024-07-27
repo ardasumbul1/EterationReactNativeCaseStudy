@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import ShoppingCartScreen from './screens/ShoppingCartScreen';
+import FavoritesScreen from './screens/FavoritesScreen';
 import BottomNavigationBar from './components/BottomNavigationBar';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -37,6 +38,11 @@ function App() {
           <Stack.Screen
             name="Shopping Cart"
             component={ShoppingCartScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Favorites"
+            component={FavoritesScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

@@ -2,14 +2,22 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'rea
 import React from 'react';
 import { scaleFont } from '../utils/scaling';
 import { useNavigation } from '@react-navigation/native';
+import {addToFavorites,removeFromFavorites} from '../redux/favoriteSlice';
 import AddToCardButton from './AddToCardButton';
+import { useDispatch } from 'react-redux';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width - 50) / 2; 
 
 const ProductListElement = ({ id, name, image_url, price, model, brand, description }) => {
-    console.log(name)
+
     const navigation = useNavigation();
+    const dispatch = useDispatch()
+
+    const handleAddToFavorites = (id, name, image_url, price, model, brand, description) => {
+      console.log("methoda girdi")
+      dispatch(addToFavorites({id, name, image_url, price, model, brand, description}))
+    }
 
   return (
     <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate('Product Details', {
@@ -28,7 +36,13 @@ const ProductListElement = ({ id, name, image_url, price, model, brand, descript
         </Text>
         <Text style={styles.details}>{model} - {brand}</Text>
         <Text style={styles.price}>${price}</Text>
-        <AddToCardButton id={id} name={name} price={price} count={1}/>
+        <View style={styles.buttonContainer}>
+          <AddToCardButton id={id} name={name} price={price} count={1}/>
+          <TouchableOpacity style={styles.favButton} onPress={() => handleAddToFavorites(id, name, image_url, price, model, brand, description)}>
+            <Text style={styles.buttonText}>Fav</Text>
+          </TouchableOpacity>
+        </View>
+
         </View>
     </TouchableOpacity>
   );
@@ -81,5 +95,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: scaleFont(16),
     fontWeight: 'bold',
+  },
+  buttonContainer:{
+    flexDirection:"row"
+  },
+  favButton:{
+    backgroundColor: '#3498db',
+    paddingVertical: 7,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    fontSize: scaleFont(16),
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

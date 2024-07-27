@@ -9,7 +9,7 @@ export const fetchData = async (page, pageSize = 12) => {
         limit: pageSize
       }
     });
-    return response.data; // Assuming the API returns an array of products
+    return response.data;
   } catch (error) {
     throw error;
   }

@@ -2,31 +2,41 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { scaleFont, scaleWidth } from '../utils/scaling';
-import ShoppingCartItem from '../components/ShoppingCartItem';
+import ProductListElement from '../components/ProductListElement';
 
 const buttonSize = scaleWidth(40);
 
-const ShoppingCartScreen = () => {
-  const cartItems = useSelector((state) => state.cart);
-
+const FavoritesScreen = () => {
+  const favoriteItems = useSelector((state) => state.favorites);
+  console.log(favoriteItems)
   return (
     <View style={styles.container}>
-      {cartItems.length === 0 ? (
+      {favoriteItems.length === 0 ? (
         <Text style={styles.emptyCart}>Your cart is empty</Text>
       ) : (
         <FlatList
-          data={cartItems}
-          renderItem={( {item} ) => (
-            <ShoppingCartItem  id={item.id} name={item.name} count={item.count} price={item.price} />
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        data={favoriteItems}
+        renderItem={({ item }) => (
+          <ProductListElement 
+            id={item.id}
+            name={item.name} 
+            image_url={item.image} 
+            price={item.price} 
+            model={item.model}
+            brand={item.brand}
+            description={item.description}
+          />
+        )}
+        keyExtractor={item => item.id.toString()}
+        numColumns={2}
+
+      />
       )}
     </View>
   );
 };
 
-export default ShoppingCartScreen;
+export default FavoritesScreen;
 
 const styles = StyleSheet.create({
   container: {

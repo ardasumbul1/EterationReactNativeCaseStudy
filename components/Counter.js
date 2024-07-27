@@ -7,7 +7,7 @@ const Counter = ({count, updateCount}) => {
 
 
     const handleIncrease = () => {
-        updateCount(count++);
+        updateCount(count);
       };
     
     const handleDecrease = () => {

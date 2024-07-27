@@ -34,7 +34,6 @@ const ProductListScreen = () => {
       loadData(page, 12);
     }, 500); // 500ms timeout
 
-    // Cleanup timeout on component unmount or when `page` changes
     return () => clearTimeout(timer);
   }, [page]);
 
@@ -49,10 +48,11 @@ const ProductListScreen = () => {
     }
   }, [searchQuery, data]);
 
-
   const handleLoadMore = () => {
-    setIsLoadMore(true);
-    setPage(prevPage => prevPage + 1);
+    if (!isLoadMore) {
+      setIsLoadMore(true);
+      setPage(prevPage => prevPage + 1);
+    }
   };
 
   const handleRefresh = () => {
@@ -65,11 +65,12 @@ const ProductListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <SearchBox searchQuery={searchQuery} onSearch={setSearchQuery} />
+      <SearchBox searchQuery={searchQuery} onSearch={setSearchQuery} />
       <FlatList
         data={filteredData}
         renderItem={({ item }) => (
           <ProductListElement 
+            id={item.id}
             name={item.name} 
             image_url={item.image} 
             price={item.price} 
@@ -78,7 +79,7 @@ const ProductListScreen = () => {
             description={item.description}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         numColumns={2}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
@@ -93,8 +94,7 @@ const ProductListScreen = () => {
 export default ProductListScreen;
 
 const styles = StyleSheet.create({
-    container:{
-        alignItems:"center",
-        backgroundColor:"#EEEEEE"
-    }
+  container: {
+    alignItems: "center",
+  },
 });

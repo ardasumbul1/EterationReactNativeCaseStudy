@@ -6,12 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 const { width } = Dimensions.get('window');
 const itemWidth = (width - 50) / 2; 
 
-const ProductListElement = ({ name, image_url, price, model, brand, description }) => {
-
+const ProductListElement = ({ id, name, image_url, price, model, brand, description }) => {
+    console.log(id)
     const navigation = useNavigation();
 
   return (
     <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate('Product Details', {
+        id,
         name,
         image_url,
         model,

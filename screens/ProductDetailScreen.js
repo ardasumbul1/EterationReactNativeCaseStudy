@@ -1,13 +1,17 @@
 import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { scaleFont } from '../utils/scaling';
+import { scaleFont, scaleWidth } from '../utils/scaling';
+import { addToCart } from '../redux/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const { width } = Dimensions.get('window');
+const buttonSize = scaleWidth(40);
 
 const ProductDetailScreen = ({ route }) => {
-  const { name, image_url, model, brand, price, description } = route.params;
+  const { id, name, image_url, model, brand, price, description } = route.params;
+  console.log(id)
   const [count, setCount] = useState(1);
-
+  const dispatch = useDispatch()
   const handleIncrease = () => {
     setCount(prevCount => prevCount + 1);
   };
@@ -37,7 +41,9 @@ const ProductDetailScreen = ({ route }) => {
           </TouchableOpacity>
         </View>
         <Text style={styles.price}>${count * price}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => { /* Add to cart func*/ }}>
+        <TouchableOpacity style={styles.button} onPress={() => { 
+          dispatch(addToCart({ id, price,count }))
+        }}>
           <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
@@ -95,8 +101,11 @@ const styles = StyleSheet.create({
   },
   countButton: {
     backgroundColor: '#d3d3d3',
-    padding: 10,
-    borderRadius: 5,
+    width: buttonSize,
+    height: buttonSize,
+    borderRadius: buttonSize / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   countButtonText: {
     fontSize: scaleFont(18),

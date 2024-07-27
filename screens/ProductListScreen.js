@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { fetchData } from '../services/api';
 import ProductListElement from '../components/ProductListElement';
 import SearchBox from '../components/SearchBox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addLocalDataToCart } from '../redux/cartSlice';
+import { useDispatch } from 'react-redux';
+
 
 const ProductListScreen = () => {
   const [data, setData] = useState([]);
@@ -14,8 +18,45 @@ const ProductListScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
+  const dispatch = useDispatch();
+
+  const loadCartData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('anotherKey');
+      if (jsonValue != null) {
+        const data = JSON.parse(jsonValue);
+        console.log("data",data)
+        dispatch(addLocalDataToCart(data));
+        return data;
+      } else {
+        console.log('No data found');
+        return [];
+      }
+    } catch (e) {
+      console.error('Error loading data:', e);
+      return [];
+    }
+  };
+
+  // method to reset AsyncStorage
+  /*const clearAllData = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('All data cleared from AsyncStorage');
+    } catch (e) {
+      console.error('Failed to clear data from AsyncStorage', e);
+    }
+  };*/
+
+  useEffect(() => {
+    //clearAllData()
+    loadCartData()
+  }, []);
+
+
   const loadData = async (page, pageSize) => {
     try {
+
       const response = await fetchData(page, pageSize);
       setData(prevData => page === 1 ? response : [...prevData, ...response]);
       setLoading(false);
@@ -96,5 +137,6 @@ export default ProductListScreen;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    height:"90%"
   },
 });

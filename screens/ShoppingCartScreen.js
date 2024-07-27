@@ -1,17 +1,15 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { scaleFont, scaleWidth } from '../utils/scaling';
+import ShoppingCartItem from '../components/ShoppingCartItem';
+
+const buttonSize = scaleWidth(40);
 
 const ShoppingCartScreen = () => {
   const cartItems = useSelector((state) => state.cart);
-  console.log(cartItems)
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemName}>{item.id}</Text>
-      <Text style={styles.itemQuantity}>Quantity: {item.count}</Text>
-      <Text style={styles.itemPrice}>Price: ${item.price}</Text>
-    </View>
-  );
+  console.log("Burası",cartItems)
+
 
   return (
     <View style={styles.container}>
@@ -20,7 +18,9 @@ const ShoppingCartScreen = () => {
       ) : (
         <FlatList
           data={cartItems}
-          renderItem={renderItem}
+          renderItem={( {item} ) => (
+            <ShoppingCartItem  name={item.name} count={item.count} price={item.price} />
+          )}
           keyExtractor={(item) => item.id.toString()}
         />
       )}
@@ -41,21 +41,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  itemContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  countContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  itemName: {
-    fontSize: 16,
+  countButton: {
+    backgroundColor: '#d3d3d3',
+    width: buttonSize,
+    height: buttonSize,
+    borderRadius: buttonSize / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  countButtonText: {
+    fontSize: scaleFont(18),
+    color: '#000',
     fontWeight: 'bold',
   },
-  itemQuantity: {
-    fontSize: 14,
-    color: 'gray',
+  count: {
+    fontSize: scaleFont(18),
+    marginHorizontal: 10,
   },
-  itemPrice: {
-    fontSize: 14,
-    color: 'green',
-  },
+
 });

@@ -2,12 +2,13 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'rea
 import React from 'react';
 import { scaleFont } from '../utils/scaling';
 import { useNavigation } from '@react-navigation/native';
+import AddToCardButton from './AddToCardButton';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width - 50) / 2; 
 
 const ProductListElement = ({ id, name, image_url, price, model, brand, description }) => {
-    console.log(id)
+    console.log(name)
     const navigation = useNavigation();
 
   return (
@@ -27,9 +28,7 @@ const ProductListElement = ({ id, name, image_url, price, model, brand, descript
         </Text>
         <Text style={styles.details}>{model} - {brand}</Text>
         <Text style={styles.price}>${price}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
-            <Text style={styles.buttonText}>Add to Cart</Text>
-        </TouchableOpacity>
+        <AddToCardButton id={id} name={name} price={price} count={1}/>
         </View>
     </TouchableOpacity>
   );
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    aspectRatio: 1/1,
+    aspectRatio: 4/3,
     borderRadius: 8,
     marginBottom: 10,
   },

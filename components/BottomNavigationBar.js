@@ -1,25 +1,45 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+
+const { width, height } = Dimensions.get('window');
 
 const BottomNavigationBar = () => {
 
     const navigation = useNavigation();
 
     return (
-    <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Shopping Cart')}>
-            <Text>CART</Text>
-        </TouchableOpacity>
-    </View>
-    )
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => navigation.navigate('Shopping Cart')} style={styles.button}>
+                <Text style={styles.buttonText}>CART</Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
 
 export default BottomNavigationBar
 
 const styles = StyleSheet.create({
-    container:{
-        width:"100%",
-        height:"10%"
-    }
-})
+    container: {
+        width: '100%',
+        height: height * 0.09,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+        borderTopWidth: 1,
+        borderColor: '#e7e7e7',
+        position: 'absolute',
+        bottom: 0,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: height * 0.02,
+        paddingHorizontal: width * 0.3,
+        borderRadius: 25,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: height * 0.02,
+        fontWeight: 'bold',
+    },
+});

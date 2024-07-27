@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { scaleFont, scaleWidth } from '../utils/scaling';
-import { addToCart } from '../redux/cartSlice';
-import { useDispatch } from 'react-redux';
+import AddToCardButton from '../components/AddToCardButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const { width } = Dimensions.get('window');
 const buttonSize = scaleWidth(40);
 
 const ProductDetailScreen = ({ route }) => {
   const { id, name, image_url, model, brand, price, description } = route.params;
-  console.log(id)
+
   const [count, setCount] = useState(1);
-  const dispatch = useDispatch()
+
   const handleIncrease = () => {
     setCount(prevCount => prevCount + 1);
   };
@@ -19,6 +20,7 @@ const ProductDetailScreen = ({ route }) => {
   const handleDecrease = () => {
     setCount(prevCount => (prevCount > 1 ? prevCount - 1 : 1));
   };
+
 
   return (
     <View style={styles.container}>
@@ -41,11 +43,7 @@ const ProductDetailScreen = ({ route }) => {
           </TouchableOpacity>
         </View>
         <Text style={styles.price}>${count * price}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => { 
-          dispatch(addToCart({ id, price,count }))
-        }}>
-          <Text style={styles.buttonText}>Add to Cart</Text>
-        </TouchableOpacity>
+        <AddToCardButton id={id} name={name} price={price} count={count} />
       </View>
     </View>
   );
@@ -55,12 +53,12 @@ export default ProductDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height:"80%",
     padding: 16,
     backgroundColor: '#fff',
   },
   image: {
-    width: width * 0.7,
+    width: width * 0.9,
     height: width * 0.7,
     resizeMode: 'contain',
     alignSelf: 'center',
@@ -84,7 +82,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: scaleFont(14),
-    textAlign: 'left',
+    textAlign: 'justify',
     lineHeight: 20,
   },
   footer: {
@@ -122,16 +120,5 @@ const styles = StyleSheet.create({
     color: 'green',
     fontWeight: 'bold',
   },
-  button: {
-    backgroundColor: '#3498db',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: scaleFont(16),
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+
 });

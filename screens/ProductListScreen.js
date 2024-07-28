@@ -5,8 +5,8 @@ import ProductListElement from '../components/ProductListElement';
 import SearchBox from '../components/SearchBox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addLocalDataToCart } from '../redux/cartSlice';
+import { addLocalDataToFavItems } from '../redux/favoriteSlice';
 import { useDispatch } from 'react-redux';
-import { getData } from '../utils/storageUtils';
 
 
 const ProductListScreen = () => {
@@ -23,19 +23,31 @@ const ProductListScreen = () => {
 
   const loadCartData = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('cartItems');
-      if (jsonValue != null) {
-        const data = JSON.parse(jsonValue);
-        console.log("data",data)
-        dispatch(addLocalDataToCart(data));
-        return data;
+      const cartItemsString = await AsyncStorage.getItem('cartItems');
+      const favoriteItemsString = await AsyncStorage.getItem('favoriteItems');
+  
+      const cartItems = cartItemsString ? JSON.parse(cartItemsString) : [];
+      const favoriteItems = favoriteItemsString ? JSON.parse(favoriteItemsString) : [];
+  
+      if (cartItems.length > 0) {
+        console.log("cartItems", cartItems);
+        dispatch(addLocalDataToCart(cartItems));
       } else {
-        console.log('No data found');
-        return [];
+        console.log('No cart items found');
       }
+  
+      if (favoriteItems.length > 0) {
+        console.log("favoriteItens", favoriteItems);
+        dispatch(addLocalDataToFavItems(favoriteItems));
+      } else {
+        console.log('No favorite items found');
+      }
+  
+       return cartItems.length > 0 || favoriteItems.length > 0;
+  
     } catch (e) {
       console.error('Error loading data:', e);
-      return [];
+      return false;
     }
   };
 

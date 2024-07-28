@@ -48,19 +48,40 @@ export const updateItemInList = async (key, newItem) => {
   };
 
 export const addItem = async (key, newItem) => {
+
   try {
-    const itemExists = await isHaveItem(key, newItem.id);
-    if (itemExists) {
-      console.log("Updating existing item");
-      await updateItemQuantityInList(key, newItem);
-    } else {
-      console.log("Adding new item");
-      const existingData = await getData(key);
-      existingData.push(newItem);
-      await AsyncStorage.setItem(key, JSON.stringify(existingData));
-      console.log('Item added successfully!');
+    if(key==="favoriteItems"){
+        const existingData = await getData(key);
+        existingData.push(newItem);
+        await AsyncStorage.setItem(key, JSON.stringify(existingData));
     }
+    else{
+        const itemExists = await isHaveItem(key, newItem.id);
+        if (itemExists) {
+          console.log("Updating existing item");
+          await updateItemQuantityInList(key, newItem);
+        } else {
+          console.log("Adding new item");
+          const existingData = await getData(key);
+          existingData.push(newItem);
+          await AsyncStorage.setItem(key, JSON.stringify(existingData));
+          console.log('Item added successfully!');
+        }
+    }
+
   } catch (error) {
     console.error('Error adding item:', error);
   }
 };
+
+export const removeItem = async (key, id) => {
+    try {
+        const existingData = await getData(key);
+        const updatedData = existingData.filter(item => item.id !== id);
+        await AsyncStorage.setItem(key, JSON.stringify(updatedData));
+        console.log('Item removed successfully!');
+        
+    } catch (error) {
+        console.error('Error removing item:', error);
+    }
+  };

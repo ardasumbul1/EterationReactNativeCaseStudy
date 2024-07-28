@@ -1,8 +1,7 @@
 import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { scaleFont, scaleWidth } from '../utils/scaling';
+import React, { useState } from 'react';
+import { scaleFont, scaleWidth,scaleHeight } from '../utils/scaling';
 import AddToCardButton from '../components/AddToCardButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const { width } = Dimensions.get('window');
@@ -53,32 +52,32 @@ export default ProductDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
-    height:"80%",
-    padding: 16,
+    height:"90%",
+    padding: scaleHeight(16),
     backgroundColor: '#fff',
   },
   image: {
-    width: width * 0.9,
+    width: width * 0.8,
     height: width * 0.7,
     resizeMode: 'contain',
     alignSelf: 'center',
-    marginBottom: 10,
+    marginBottom: scaleHeight(10),
   },
   name: {
     fontSize: scaleFont(18),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: scaleHeight(8),
   },
   details: {
     fontSize: scaleFont(16),
     textAlign: 'center',
     color: 'gray',
-    marginBottom: 8,
+    marginBottom: scaleHeight(8),
   },
   descriptionContainer: {
     flex: 1,
-    marginBottom: 16,
+    marginBottom: scaleHeight(8),
   },
   description: {
     fontSize: scaleFont(14),
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: scaleHeight(5),
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
   },
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
   },
   count: {
     fontSize: scaleFont(18),
-    marginHorizontal: 10,
+    marginHorizontal: scaleWidth(10),
   },
   price: {
     fontSize: scaleFont(20),

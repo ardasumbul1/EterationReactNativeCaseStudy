@@ -6,6 +6,7 @@ import SearchBox from '../components/SearchBox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addLocalDataToCart } from '../redux/cartSlice';
 import { useDispatch } from 'react-redux';
+import { getData } from '../utils/storageUtils';
 
 
 const ProductListScreen = () => {
@@ -22,7 +23,7 @@ const ProductListScreen = () => {
 
   const loadCartData = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('anotherKey');
+      const jsonValue = await AsyncStorage.getItem('cartItems');
       if (jsonValue != null) {
         const data = JSON.parse(jsonValue);
         console.log("data",data)

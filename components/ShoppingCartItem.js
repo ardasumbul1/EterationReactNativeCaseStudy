@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { scaleFont, scaleWidth } from '../utils/scaling';
-import { increaseQuantity, decreaseQuantity } from '../redux/cartSlice';
+import { updateQuantity } from '../redux/cartSlice';
 import { useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateItemInList } from '../utils/storageUtils';
 
 const buttonSize = scaleWidth(40);
 
@@ -11,47 +11,26 @@ const ShoppingCartItem = ({ id, name, count, price }) => {
   const dispatch = useDispatch();
   const [countToUpdate, setCount] = useState(count);
 
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('anotherKey');
-      return jsonValue != null ? JSON.parse(jsonValue) : [];
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const updateItemInList = async (id, newCount) => {
-    try {
-      const items = await getData();
-      const index = items.findIndex(item => item.id === id);
-      if (index !== -1) {
-        items[index].count = newCount;
-        await AsyncStorage.setItem('anotherKey', JSON.stringify(items));
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const handleIncrease = async () => {
     const newCount = countToUpdate + 1;
     setCount(newCount);
-    dispatch(increaseQuantity({ id, name, count: newCount, price }));
+    dispatch(updateQuantity({ id, name, count: newCount, price }));
   };
 
   const handleDecrease = async () => {
     const newCount = countToUpdate > 1 ? countToUpdate - 1 : 1;
     setCount(newCount);
-    dispatch(decreaseQuantity({ id, name, count: newCount, price }));
+    dispatch(updateQuantity({ id, name, count: newCount, price }));
   };
 
   useEffect(() => {
-    async function updateItem() {
-      await updateItemInList(id, countToUpdate);
-    }
+    const updateItem = async () => {
+      await updateItemInList("cartItems", { id, name, count: countToUpdate, price });
+    };
     updateItem();
-  }, [countToUpdate]); 
+  }, [countToUpdate]);
 
+  
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
@@ -84,18 +63,18 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   infoContainer: {
-    padding: 16,
+    padding: scaleWidth(16),
   },
   itemName: {
-    fontSize: 16,
+    fontSize: scaleFont(16),
     fontWeight: 'bold',
   },
   itemQuantity: {
-    fontSize: 14,
+    fontSize: scaleFont(14),
     color: 'gray',
   },
   itemPrice: {
-    fontSize: 14,
+    fontSize: scaleFont(14),
     color: 'green',
   },
   countContainer: {

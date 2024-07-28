@@ -18,11 +18,9 @@ export const favoriteSlice = createSlice({
       });
     },
     addToFavorites: (state, action) => {
-        console.log("çalıştı")
         state.push(action.payload)
       },
     removeFromFavorites: (state, action) => {
-        console.log("çalıştı222222")
         return state.filter(item => item.id !== action.payload.id);
     },
   }

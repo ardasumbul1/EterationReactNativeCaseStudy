@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../services/api';
 import ProductListElement from '../components/ProductListElement';
 import SearchBox from '../components/SearchBox';
+import { scaleFont, scaleHeight } from '../utils/scaling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addLocalDataToCart } from '../redux/cartSlice';
 import { addLocalDataToFavItems } from '../redux/favoriteSlice';
 import { useDispatch } from 'react-redux';
-
+import FilterModal from '../components/FilterModal'; // Import the FilterModal component
 
 const ProductListScreen = () => {
   const [data, setData] = useState([]);
@@ -18,6 +19,8 @@ const ProductListScreen = () => {
   const [isLoadMore, setIsLoadMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [filters, setFilters] = useState({ model: '', minPrice: 0, maxPrice: Infinity });
 
   const dispatch = useDispatch();
 
@@ -25,51 +28,38 @@ const ProductListScreen = () => {
     try {
       const cartItemsString = await AsyncStorage.getItem('cartItems');
       const favoriteItemsString = await AsyncStorage.getItem('favoriteItems');
-  
+
       const cartItems = cartItemsString ? JSON.parse(cartItemsString) : [];
       const favoriteItems = favoriteItemsString ? JSON.parse(favoriteItemsString) : [];
-  
+
       if (cartItems.length > 0) {
         console.log("cartItems", cartItems);
         dispatch(addLocalDataToCart(cartItems));
       } else {
         console.log('No cart items found');
       }
-  
+
       if (favoriteItems.length > 0) {
-        console.log("favoriteItens", favoriteItems);
+        console.log("favoriteItems", favoriteItems);
         dispatch(addLocalDataToFavItems(favoriteItems));
       } else {
         console.log('No favorite items found');
       }
-  
-       return cartItems.length > 0 || favoriteItems.length > 0;
-  
+
+      return cartItems.length > 0 || favoriteItems.length > 0;
+
     } catch (e) {
       console.error('Error loading data:', e);
       return false;
     }
   };
 
-  // method to reset AsyncStorage
-  /*const clearAllData = async () => {
-    try {
-      await AsyncStorage.clear();
-      console.log('All data cleared from AsyncStorage');
-    } catch (e) {
-      console.error('Failed to clear data from AsyncStorage', e);
-    }
-  };*/
-
   useEffect(() => {
-    //clearAllData()
-    loadCartData()
+    loadCartData();
   }, []);
-
 
   const loadData = async (page, pageSize) => {
     try {
-
       const response = await fetchData(page, pageSize);
       setData(prevData => page === 1 ? response : [...prevData, ...response]);
       setLoading(false);
@@ -92,15 +82,18 @@ const ProductListScreen = () => {
   }, [page]);
 
   useEffect(() => {
-    if (searchQuery) {
-      const filtered = data.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    if (searchQuery || filters.model || filters.minPrice || filters.maxPrice !== Infinity) {
+      const filtered = data.filter(product => 
+        (product.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (filters.model ? product.model.toLowerCase().includes(filters.model.toLowerCase()) : true) &&
+        (filters.minPrice ? product.price >= filters.minPrice : true) &&
+        (filters.maxPrice !== Infinity ? product.price <= filters.maxPrice : true)
       );
       setFilteredData(filtered);
     } else {
       setFilteredData(data);
     }
-  }, [searchQuery, data]);
+  }, [searchQuery, data, filters]);
 
   const handleLoadMore = () => {
     if (!isLoadMore) {
@@ -114,12 +107,21 @@ const ProductListScreen = () => {
     setPage(1);
   };
 
+  const applyFilters = (filterData) => {
+    setFilters(filterData);
+  };
+
   if (loading && page === 1) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBox searchQuery={searchQuery} onSearch={setSearchQuery} />
+      <View style={styles.filterContainer}>
+        <SearchBox searchQuery={searchQuery} onSearch={setSearchQuery} />
+        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText}>Filter</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={filteredData}
         renderItem={({ item }) => (
@@ -131,6 +133,7 @@ const ProductListScreen = () => {
             model={item.model}
             brand={item.brand}
             description={item.description}
+            isFavoriteStatus={false}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -141,6 +144,13 @@ const ProductListScreen = () => {
         onRefresh={handleRefresh}
         ListFooterComponent={() => isLoadMore ? <ActivityIndicator size="large" /> : null}
       />
+      <FilterModal
+        visible={modalVisible}
+        onClose
+
+={() => setModalVisible(false)}
+        onApply={applyFilters}
+      />
     </SafeAreaView>
   );
 };
@@ -150,6 +160,24 @@ export default ProductListScreen;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    height:"90%"
+    height: "90%"
+  },
+  filterContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: scaleHeight(10),
+  },
+  button: {
+    backgroundColor: 'grey',
+    paddingVertical: scaleHeight(7),
+    width: "20%",
+    justifyContent: "center"
+  },
+  buttonText: {
+    fontSize: scaleFont(15),
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

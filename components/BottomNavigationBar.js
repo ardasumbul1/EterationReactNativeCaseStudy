@@ -10,8 +10,11 @@ const BottomNavigationBar = () => {
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.button}>
+                <Text style={styles.buttonText}>Home</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Shopping Cart')} style={styles.button}>
-                <Text style={styles.buttonText}>CART</Text>
+                <Text style={styles.buttonText}>Cart</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={styles.button}>
                 <Text style={styles.buttonText}>Favorites</Text>
@@ -39,8 +42,8 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#007bff',
         paddingVertical: height * 0.02,
-        paddingHorizontal: width * 0.1,
-        borderRadius: 25,
+        paddingHorizontal: width * 0.05,
+        borderRadius: 10,
     },
     buttonText: {
         color: '#fff',

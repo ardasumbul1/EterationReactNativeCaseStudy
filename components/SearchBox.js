@@ -17,7 +17,7 @@ const SearchBox = ({ searchQuery, onSearch }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width:"100%",
+    width:"80%",
     padding: 10,
     backgroundColor: '#fff',
     borderBottomWidth: 1,

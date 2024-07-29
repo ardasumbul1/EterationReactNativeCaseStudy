@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { scaleFont, scaleWidth } from '../utils/scaling';
 import { addToCart } from '../redux/cartSlice';
-import { getData, updateItemInList, isHaveItem, addItem } from '../utils/storageUtils';
+import { addItem } from '../utils/storageUtils';
 
 const AddToCardButton = ({ id,name, price,count }) => {
 

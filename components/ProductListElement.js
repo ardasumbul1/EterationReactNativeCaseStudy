@@ -54,7 +54,7 @@ const ProductListElement = ({ id, name, image_url, price, model, brand, descript
                 console.error('Error handling favorites:', error);
               }
             }}>  
-            <Text style={styles.buttonText}>Fav</Text>
+            <Text style={[styles.buttonText, { color: isFavorite ? 'orange' : '#fff' }]}>Fav</Text>
           </TouchableOpacity>
         </View>
 
@@ -105,11 +105,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: scaleWidth(10),
     borderRadius: scaleHeight(5),
     alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: scaleFont(16),
-    fontWeight: 'bold',
   },
   buttonContainer:{
     flexDirection:"row"

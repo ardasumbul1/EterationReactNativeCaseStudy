@@ -1,10 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 
 const BottomNavigationBar = () => {
+    const cartItems = useSelector((state) => state.cart);
+    const [totalCount, setTotalCount] = useState(0)
+
+    useEffect(() => {
+
+        setTotalCount(cartItems.reduce((total, item) => total + item.count, 0));
+      }, [cartItems]);
 
     const navigation = useNavigation();
 
@@ -14,7 +22,7 @@ const BottomNavigationBar = () => {
                 <Text style={styles.buttonText}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Shopping Cart')} style={styles.button}>
-                <Text style={styles.buttonText}>Cart</Text>
+                <Text style={styles.buttonText}>{"Cart ("+totalCount+")"}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Favorites')} style={styles.button}>
                 <Text style={styles.buttonText}>Favorites</Text>
